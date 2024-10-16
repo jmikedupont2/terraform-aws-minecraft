@@ -168,7 +168,7 @@ data "template_file" "user_data" {
 
 // Security group for our instance - allows SSH and minecraft 
 module "ec2_security_group" {
-  source = "git@github.com:terraform-aws-modules/terraform-aws-security-group.git?ref=master"
+  source = "git@github.com:terraform-aws-modules/terraform-aws-security-group.git?ref=tags/4.4.0"
 
   name        = "${var.name}-ec2"
   description = "Allow SSH and TCP ${var.mc_port}"
@@ -211,7 +211,7 @@ locals {
 
 // EC2 instance for the server - tune instance_type to fit your performance and budget requirements
 module "ec2_minecraft" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ec2-instance.git?ref=master"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ec2-instance.git?ref=tags/2.20.0"
   name   = "${var.name}-public"
 
   # instance
