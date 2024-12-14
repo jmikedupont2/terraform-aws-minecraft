@@ -207,27 +207,28 @@ module "ec2_security_group" {
 }
 
 // Create EC2 ssh key pair
-resource "tls_private_key" "ec2_ssh" {
-  count = length(var.key_name) > 0 ? 0 : 1
+#resource "tls_private_key" "ec2_ssh" {
+#  count = length(var.key_name) > 0 ? 0 : 1
+#
+#  algorithm = "RSA"
+#  rsa_bits  = 4096
+#}
 
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
+#resource "aws_key_pair" "ec2_ssh" {
+#  count = length(var.key_name) > 0 ? 0 : 1
+#  key_name   = "${var.name}-ec2-ssh-key"
+#  public_key = tls_private_key.ec2_ssh[0].public_key_openssh
+#}
 
-resource "aws_key_pair" "ec2_ssh" {
-  count = length(var.key_name) > 0 ? 0 : 1
-
-  key_name   = "${var.name}-ec2-ssh-key"
-  public_key = tls_private_key.ec2_ssh[0].public_key_openssh
-}
-
-locals {
-  _ssh_key_name = length(var.key_name) > 0 ? var.key_name : aws_key_pair.ec2_ssh[0].key_name
-}
+#locals {
+#  _ssh_key_name = length(var.key_name) > 0 ? var.key_name : aws_key_pair.ec2_ssh[0].key_name
+#}
 
 output test {
-  value     = [ module.ec2_security_group ]
+  value     = module.ec2_security_group.security_group_id
+  
 }
+#  vpc_security_group_ids      = [ module.ec2_security_group.this_security_group_id ]
 // EC2 instance for the server - tune instance_type to fit your performance and budget requirements
 module "ec2_minecraft" {
   #  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ec2-instance.git?ref=tags/v2.20.0"
@@ -235,7 +236,7 @@ module "ec2_minecraft" {
   name   = "${var.name}-public"
 
   # instance
-  key_name             = local._ssh_key_name
+  key_name             = "mdupont-deployer-key"
   ami                  = var.ami != "" ? var.ami : data.aws_ami.ubuntu.image_id
   instance_type        = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.mc.id
@@ -243,7 +244,10 @@ module "ec2_minecraft" {
 
   # network
   subnet_id                   = local.subnet_id
-  # vpc_security_group_ids      = [ module.ec2_security_group.this_security_group_id ]
+  vpc_security_group_ids      = [
+    module.ec2_security_group.security_group_id
+  ]
+#  module.ec2_security_group.aws_security_group.this_name_prefix[0]
   associate_public_ip_address = var.associate_public_ip_address
 
   tags = module.label.tags

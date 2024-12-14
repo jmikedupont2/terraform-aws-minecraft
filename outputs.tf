@@ -14,26 +14,26 @@ output "id" {
   value = module.ec2_minecraft.id
 }
 
-output "public_key_openssh" {
-  value = tls_private_key.ec2_ssh.*.public_key_openssh
-}
+#output "public_key_openssh" {
+#  value = tls_private_key.ec2_ssh.*.public_key_openssh
+#}
 
-output "public_key" {
-  value = tls_private_key.ec2_ssh.*.public_key_pem
-}
+#output "public_key" {
+#  value = tls_private_key.ec2_ssh.*.public_key_pem
+#}
 
 #output "private_key" {
 #  value = tls_private_key.ec2_ssh.*.private_key_pem
 #}
 
-resource "local_file" "private_key" {
-  count = length(var.key_name) > 0 ? 0 : 1
+#resource "local_file" "private_key" {
+#  count = length(var.key_name) > 0 ? 0 : 1
 
-  content              = tls_private_key.ec2_ssh[0].private_key_pem
-  filename             = "${path.module}/ec2-private-key.pem"
-  directory_permission = "0700"
-  file_permission      = "0700"
-}
+#  content              = tls_private_key.ec2_ssh[0].private_key_pem
+#  filename             = "${path.module}/ec2-private-key.pem"
+#  directory_permission = "0700"
+#  file_permission      = "0700"
+#}
 
 output "zzz_ec2_ssh" {
   value = length(var.key_name) > 0 ? "" : <<EOT
