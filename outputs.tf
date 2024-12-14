@@ -22,9 +22,9 @@ output "public_key" {
   value = tls_private_key.ec2_ssh.*.public_key_pem
 }
 
-output "private_key" {
-  value = tls_private_key.ec2_ssh.*.private_key_pem
-}
+#output "private_key" {
+#  value = tls_private_key.ec2_ssh.*.private_key_pem
+#}
 
 resource "local_file" "private_key" {
   count = length(var.key_name) > 0 ? 0 : 1
@@ -49,6 +49,11 @@ output "ec2_instance_profile" {
   value = "${aws_iam_instance_profile.mc.name}"
 }
 
+output "minecraft_server1" {
+  value = "${module.ec2_minecraft}"
+}
+
 output "minecraft_server" {
-  value = "${module.ec2_minecraft[0].public_ip}:${var.mc_port}"
+  #  value = "${module.ec2_minecraft[0].public_ip}:${var.mc_port}"
+  value = "${module.ec2_minecraft.public_ip}:${var.mc_port}"
 }
