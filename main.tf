@@ -9,6 +9,11 @@
 #  default = "vpc-04f28c9347af48b55"
 #}
 
+data "aws_vpc" "default" {
+  #default = true
+  id = "vpc-04f28c9347af48b55"
+}
+
 #data "aws_subnet_ids" "default" {
 #  vpc_id = local.vpc_id
 #}
@@ -16,8 +21,9 @@
 data "aws_caller_identity" "aws" {}
 
 locals {
-  vpc_id    = var.vpc_id
+  #vpc_id    = var.vpc_id
   #length(var.vpc_id) > 0 ? var.vpc_id : data.aws_vpc.default.id
+  vpc_id    = data.aws_vpc.default.id
 #  ec2_subnet_id = 
   #subnet_id = length(var.subnet_id) > 0 ? var.subnet_id : sort(data.aws_subnet_ids.default.ids)[0]
   subnet_id = "subnet-057c90cfe7b2e5646"
@@ -92,7 +98,7 @@ module "s3" {
   create_bucket = local.using_existing_bucket ? false : true
 
   bucket = local.bucket
-  acl    = "private"
+  #acl    = "private"
 
   force_destroy = var.bucket_force_destroy
 
@@ -101,10 +107,10 @@ module "s3" {
   }
 
   # S3 bucket-level Public Access Block configuration
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  #block_public_acls       = true
+  #block_public_policy     = true
+  #ignore_public_acls      = true
+  #restrict_public_buckets = true
 
   tags = module.label.tags
 }
