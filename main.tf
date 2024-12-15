@@ -144,6 +144,12 @@ resource "aws_iam_instance_profile" "mc" {
   role = aws_iam_role.allow_s3.name
 }
 
+# allow attachment
+resource "aws_iam_role_policy_attachment" "ssm-attach" {
+  role       = aws_iam_role.allow_s3.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 resource "aws_iam_role_policy" "mc_allow_ec2_to_s3" {
   name   = "${module.label.id}-allow-ec2-to-s3"
   role   = aws_iam_role.allow_s3.id
