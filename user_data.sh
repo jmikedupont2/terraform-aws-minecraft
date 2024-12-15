@@ -159,6 +159,7 @@ esac
 # Create mc dir, sync S3 to it and download mc if not already there (from S3)
 /bin/mkdir -p ${mc_root}
 /snap/bin/aws s3 sync s3://${mc_bucket} ${mc_root}
+apt-get install -y ec2-instance-connect git virtualenv || echo oops1
 
 # Download server if it doesn't exist on S3 already (existing from previous install)
 # To force a new server version, remove the server JAR from S3 bucket
