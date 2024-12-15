@@ -45,7 +45,10 @@ emacs:
 /ssh:ubuntu@${module.ec2_minecraft.public_ip}:/var/log/cloud-init-output.log
 
 check:
-nc -zv ${module.ec2_minecraft.public_ip} ${var.mc_port}"
+nc -zv ${module.ec2_minecraft.public_ip} ${var.mc_port}
+
+minecraft:
+${module.ec2_minecraft.public_ip}:${var.mc_port}
 
 EOT
 
