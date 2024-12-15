@@ -41,7 +41,8 @@ ubuntu_linux_setup() {
   export SSH_USER="ubuntu"
   export DEBIAN_FRONTEND=noninteractive
   /usr/bin/apt-get update
-  /usr/bin/apt-get -yq install -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" default-jre wget awscli jq
+  /usr/bin/apt-get -yq install -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" default-jre wget  jq
+  snap install aws-cli --classic
   /bin/cat <<"__UPG__" > /etc/apt/apt.conf.d/10periodic
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Download-Upgradeable-Packages "1";
@@ -157,7 +158,8 @@ esac
 
 # Create mc dir, sync S3 to it and download mc if not already there (from S3)
 /bin/mkdir -p ${mc_root}
-/usr/bin/aws s3 sync s3://${mc_bucket} ${mc_root}
+/snap/bin/aws s3 sync s3://${mc_bucket} ${mc_root}
+apt-get install -y ec2-instance-connect git virtualenv || echo oops1
 
 # Download server if it doesn't exist on S3 already (existing from previous install)
 # To force a new server version, remove the server JAR from S3 bucket
@@ -169,7 +171,7 @@ fi
 /bin/cat <<CRON > /etc/cron.d/minecraft
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:${mc_root}
-*/${mc_backup_freq} * * * *  $SSH_USER  /usr/bin/aws s3 sync ${mc_root}  s3://${mc_bucket}
+*/${mc_backup_freq} * * * *  $SSH_USER  /snap/bin/aws s3 sync ${mc_root}  s3://${mc_bucket}
 CRON
 
 # Update minecraft EULA
